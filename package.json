@@ -1,0 +1,39 @@
+{
+  "name": "pqcli-ts",
+  "version": "0.1.0",
+  "description": "A command-line interface for playing the browser game Progress Quest, written in TypeScript.",
+  "author": {
+    "name": "Chris Webster",
+    "email": "hello@chriswebster.coffee"
+  },
+  "license": "MIT",
+  "readme": "README.md",
+  "main": "index.ts",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix && prettier --write .",
+    "prepare": "lint-staged"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "latest",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
+    "typescript-eslint": "^8.59.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "lint-staged": {
+    ".{ts,js}": "eslint --cache --fix",
+    ".{ts,js,css,md}": "prettier --write",
+    ".js": "eslint --cache --fix",
+    ".{js,css,md}": "prettier --write"
+  }
+}
