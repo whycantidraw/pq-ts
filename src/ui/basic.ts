@@ -4,7 +4,7 @@ import { choice } from "../common/common";
 import { logger } from "../common/logger";
 import { toRoman } from "../common/lingo";
 import { classes } from "../data/classes";
-import { primeStats } from "../data/enums";
+import { primeStats, StatType } from "../data/enums";
 import { species } from "../data/species";
 import { Player } from "../mechanics/player";
 import { Simulation } from "../mechanics/simulation";
@@ -97,7 +97,7 @@ async function createPlayerFlow(roster: Roster, useSaves: boolean, rl: Rl): Prom
     const cls = await menu(rl, classes.map((c) => ({ value: c.name, label: c.name })), "Choose a class");
 
     const builder = new StatsBuilder();
-    let stats = builder.roll();
+    let stats: Map<StatType, number>;
     for (;;) {
         stats = builder.roll();
         for (const stat of primeStats) {
