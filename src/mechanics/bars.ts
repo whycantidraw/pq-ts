@@ -17,9 +17,12 @@ export class Bar {
         }
     }
 
-    increment(){}
+    increment(inc: number) {
+        return this.reposition(this.position + inc);
+    }
 
     reposition(newPosition: number){
+        newPosition = Math.min(newPosition, this.max);
         if (newPosition === this.position) {
             return ["change", false];
         } else {

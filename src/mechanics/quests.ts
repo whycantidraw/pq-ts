@@ -7,26 +7,30 @@ export class QuestBook {
     act: number;
     plotBar: Bar;
     questBar: Bar;
+    monster: Monster | null;
 
     constructor() {
         this.quests = [];
         this.act = 0;
         this.plotBar = new Bar(1);
         this.questBar = new Bar(1);
+        this.monster = null;
     }
 
     get currentQuest(): string | null {
         return this.quests.at(-1) || null;
     }
 
-    increment(){
+    incrementAct(){
         this.act += 1;
         return ["start_act", this.act];
     }
 
-    set addQuest(quest: string) {
-        //logger.info("Commencing quest: %s", name)
+    addQuest(quest: string) {
+        //logger.info("Commencing quest: %s", quest)
+        this.quests = this.quests.slice(-100);
         this.quests.push(quest);
+        return ["start_quest", quest];
     }
 }
 
@@ -45,10 +49,9 @@ export class Task implements BaseTaskModel {
         this.description = description;
         this.duration = duration;
         this.taskType = taskType;
-        if (taskType === TaskType.kill && monster) {
+        // Kill tasks usually carry a monster, but NPC encounters have none.
+        if (monster) {
             this.monster = monster;
-        } else if (taskType === TaskType.kill && !monster) {
-            throw new Error("Kill tasks must have a monster");
         }
     }
 }

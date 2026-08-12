@@ -8,12 +8,12 @@ interface InventoryItem {
 export class Inventory {
     gold: number;
     items: InventoryItem[];
-    ecumberanceBar: Bar;
+    encumbranceBar: Bar;
 
     constructor(capacity: number = 0) {
         this.gold = 0
         this.items = [];
-        this.ecumberanceBar = new Bar(capacity);
+        this.encumbranceBar = new Bar(capacity);
     }
 
     addGold(quantity: number) {
@@ -52,10 +52,10 @@ export class Inventory {
     }
 
     encumberanceCheck() {
-        this.ecumberanceBar.reposition(this.items.reduce((total, item) => total + item.quantity, 0));
+        this.encumbranceBar.reposition(this.items.reduce((total, item) => total + item.quantity, 0));
     }
 
     set capacity(newCapacity: number) {
-        this.ecumberanceBar.reset(newCapacity, this.ecumberanceBar.position);
+        this.encumbranceBar.reset(newCapacity, this.encumbranceBar.position);
     }
 }

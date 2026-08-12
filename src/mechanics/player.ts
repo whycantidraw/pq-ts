@@ -1,6 +1,5 @@
 import { randomInt, below, belowLow, odds, choice } from "../common/common";
 import { EquipmentType, StatType } from "../data/enums";
-import { specials, itemAttributes, itemOfs } from "../data/items";
 import {
     offensivePositiveModifiers,
     offensiveNegativeModifiers,
@@ -10,6 +9,7 @@ import {
 import { spellList } from "../data/spells";
 import { Bar } from "./bars";
 import { Equipment, weapons, shields, armour } from "./equipment";
+import { specialItem } from "./generation";
 import { Inventory } from "./inventory";
 import { QuestBook, Task } from "./quests";
 import { SpellBook } from "./spells";
@@ -31,14 +31,6 @@ function pickEquipment<T extends Quality>(source: T[], goal: number): T {
         }
     }
     return result;
-}
-
-function interestingItem(): string {
-    return choice(itemAttributes) + " " + choice(specials);
-}
-
-function specialItem(): string {
-    return interestingItem() + " of " + choice(itemOfs);
 }
 
 export class Player {

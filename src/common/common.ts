@@ -22,3 +22,8 @@ export function odds(chance: number, outOf: number): boolean {
 export function choice<T>(source: readonly T[]): T {
     return source[below(source.length)]!;
 }
+
+// A random element of source, biased towards earlier elements.
+export function choiceLow<T>(source: readonly T[]): T {
+    return source[belowLow(source.length)]!;
+}
