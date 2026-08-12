@@ -13,6 +13,8 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "bun build ./src/index.ts --outdir dist --target bun",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix && prettier --write .",
     "prepare": "lint-staged"

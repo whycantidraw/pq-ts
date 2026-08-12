@@ -1,4 +1,4 @@
-import { StatType } from "./data/enums";
+import { StatType } from "./enums";
 
 interface SpeciesModel {
     name: string;
