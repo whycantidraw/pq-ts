@@ -27,5 +27,9 @@ export class Equipment {
         this.items = items;
     }
 
-    put(){}
+    put(slot: EquipmentType, name: string) {
+        this.items.set(slot, name);
+        //logger.info("Equipped %s in %s slot", name, slot)
+        return ["change", slot, name];
+    }
 }

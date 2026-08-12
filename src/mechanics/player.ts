@@ -1,15 +1,44 @@
-import { randomInt } from "../common/common";
+import { randomInt, below, belowLow, odds, choice } from "../common/common";
 import { EquipmentType, StatType } from "../data/enums";
-import { weaponsList } from "../data/equipment";
+import { specials, itemAttributes, itemOfs } from "../data/items";
+import {
+    offensivePositiveModifiers,
+    offensiveNegativeModifiers,
+    defensivePositiveModifiers,
+    defensiveNegativeModifiers,
+} from "../data/modifiers";
+import { spellList } from "../data/spells";
 import { Bar } from "./bars";
-import { Equipment } from "./equipment";
+import { Equipment, weapons, shields, armour } from "./equipment";
 import { Inventory } from "./inventory";
 import { QuestBook, Task } from "./quests";
 import { SpellBook } from "./spells";
 import { Stats } from "./stats";
 
+type Quality = { name: string; quality: number };
+
 function levelUpTime(level: number): number {
     return 20 * level * 60;
+}
+
+// Pick an equipment/modifier preset whose quality is closest to goal.
+function pickEquipment<T extends Quality>(source: T[], goal: number): T {
+    let result = choice(source);
+    for (let i = 0; i < 5; i++) {
+        const alternative = choice(source);
+        if (Math.abs(goal - alternative.quality) < Math.abs(goal - result.quality)) {
+            result = alternative;
+        }
+    }
+    return result;
+}
+
+function interestingItem(): string {
+    return choice(itemAttributes) + " " + choice(specials);
+}
+
+function specialItem(): string {
+    return interestingItem() + " of " + choice(itemOfs);
 }
 
 export class Player {
@@ -74,42 +103,86 @@ export class Player {
     }
 
     winStat() {
-        let chosenStat: StatType | undefined
-        const rand = Math.random() < 0.5
-        if (rand) {
-            const randIndex = randomInt(7);
-            chosenStat = Object.values(StatType)[randIndex];
+        let chosenStat: StatType;
+        if (odds(1, 2)) {
+            chosenStat = choice(Object.values(StatType));
         } else {
-            // boost heighest stat
+            // favor the best stat so it will tend to clump
+            let t = 0;
+            for (const value of this.stats.stats.values()) {
+                t += value ** 2;
+            }
+            t = below(t);
+            chosenStat = StatType.strength;
+            for (const [stat, value] of this.stats.stats) {
+                chosenStat = stat;
+                t -= value ** 2;
+                if (t < 0) {
+                    break;
+                }
+            }
         }
-        // increment stat
-        // update capacity if strength
+
+        this.stats.increment(chosenStat, 1);
+        if (chosenStat === StatType.strength) {
+            this.inventory.capacity = 10 + (this.stats.stats.get(StatType.strength) || 0);
+        }
+        return ["win_stat", chosenStat];
     }
 
     winEquipment() {
-        const chosenEquip: EquipmentType | undefined = Object.values(EquipmentType)[randomInt(11)]
-        let stuff: any
-        let better: any
-        let worse: any
+        const slot = choice(Object.values(EquipmentType));
 
-        if (chosenEquip === EquipmentType.weapon) {
-            stuff = weaponsList;
+        let stuff: Quality[];
+        let better: Quality[];
+        let worse: Quality[];
+
+        if (slot === EquipmentType.weapon) {
+            stuff = weapons;
+            better = offensivePositiveModifiers;
+            worse = offensiveNegativeModifiers;
         } else {
-
+            stuff = slot === EquipmentType.shield ? shields : armour;
+            better = defensivePositiveModifiers;
+            worse = defensiveNegativeModifiers;
         }
-        //let stuff: EquipmentPreset
-        //let better: Modifier
-        //let worse: Modifier
+
+        const equipment = pickEquipment(stuff, this.level);
+        let name = equipment.name;
+        let plus = this.level - equipment.quality;
+        const modifierPool = plus < 0 ? worse : better;
+        let count = 0;
+        while (count < 2 && plus !== 0) {
+            const modifier = choice(modifierPool);
+            if (name.includes(modifier.name)) {
+                break; // no repeats
+            }
+            if (Math.abs(plus) < Math.abs(modifier.quality)) {
+                break; // too much
+            }
+            name = modifier.name + " " + name;
+            plus -= modifier.quality;
+            count += 1;
+        }
+
+        if (plus < 0) {
+            name = `${plus} ${name}`;
+        }
+        if (plus > 0) {
+            name = `+${plus} ${name}`;
+        }
+
+        return this.equipment.put(slot, name);
     }
 
     winSpell() {
-        // spell list length equal to wisdom + level
-        // pick spell from spell list
-        // if spell is new and book not full, add spell to book
-        // if spell is not new, increment
-        // if spell is new and book is full, do nothing
+        const wisdom = this.stats.stats.get(StatType.wisdom) || 0;
+        const index = belowLow(Math.min(wisdom + this.level, spellList.length));
+        return this.spellBook.addSpell(spellList[index]!, 1);
     }
 
-    winItem(){}
+    winItem() {
+        return this.inventory.addItem(specialItem(), 1);
+    }
 
 }
