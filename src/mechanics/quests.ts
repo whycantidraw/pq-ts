@@ -1,3 +1,4 @@
+import { logger } from "../common/logger";
 import { TaskType } from "../data/enums";
 import type { Monster } from "./monsters";
 import { Bar } from "./bars";
@@ -27,7 +28,7 @@ export class QuestBook {
     }
 
     addQuest(quest: string) {
-        //logger.info("Commencing quest: %s", quest)
+        logger.info(`Commencing quest: ${quest}`);
         this.quests = this.quests.slice(-100);
         this.quests.push(quest);
         return ["start_quest", quest];

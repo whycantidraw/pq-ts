@@ -1,4 +1,5 @@
 import { randomInt, below, belowLow, odds, choice } from "../common/common";
+import { logger } from "../common/logger";
 import { EquipmentType, StatType } from "../data/enums";
 import {
     offensivePositiveModifiers,
@@ -74,7 +75,7 @@ export class Player {
     setTask(task: Task) {
         this.task = task;
         this.taskBar.reset(task.duration);
-        //logger.info("%s...", task.description)
+        logger.info(`${task.description}...`);
         return ["start_task", task];
     }
 
@@ -84,7 +85,7 @@ export class Player {
 
     levelUp(){
         this.level += 1;
-        //logger.info("Leveled up to level %d!", this.level)
+        logger.info(`Leveled up to level ${this.level}!`);
         this.stats.increment(StatType.hp_max, (Math.floor(this.stats.stats.get(StatType.condition) || 0)/3) + randomInt(5, 1));
         this.stats.increment(StatType.mp_max, (Math.floor(this.stats.stats.get(StatType.intelligence) || 0)/3) + randomInt(5, 1));
         this.winStat();

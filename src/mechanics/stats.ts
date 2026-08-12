@@ -1,3 +1,4 @@
+import { logger } from "../common/logger";
 import { StatType, primeStats } from "../data/enums";
 
 export class Stats{
@@ -35,6 +36,6 @@ export class Stats{
 
     increment(stat: StatType, quantity: number) {
         this.stats.set(stat, (this.stats.get(stat) || 0) + quantity);
-        //logger.info("Increased %s to %d", stat.value, self[stat])
+        logger.info(`Increased ${stat} to ${this.stats.get(stat)}`);
     }
 }

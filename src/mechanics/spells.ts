@@ -1,3 +1,6 @@
+import { logger } from "../common/logger";
+import { toRoman } from "../common/lingo";
+
 export { spellList } from "../data/spells";
 
 interface SpellModel {
@@ -26,13 +29,13 @@ export class SpellBook {
         for (const spell of this.spells) {
             if (spell.name === name) {
                 spell.level += level;
-                //logger.info("Learned %s at level %d", spell_name, spell.level)
+                logger.info(`Learned ${spell.name} ${toRoman(spell.level)}`);
                 return ["change", spell];
             }
         }
         const spell = new Spell(name, level);
         this.spells.push(spell);
-        //logger.info("Learned %s at level %d", spell_name, spell.level)
+        logger.info(`Learned ${spell.name} ${toRoman(spell.level)}`);
         return ["add", spell];
     }
 

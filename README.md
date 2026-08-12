@@ -28,7 +28,21 @@ Basic interface:
 
 ![Screenshot](screen-basic.png)
 
-## How to install
+## Running the TypeScript port
+
+This repository is a TypeScript/[Bun](https://bun.sh) port of pq-cli, with an
+[Ink](https://github.com/vadimdemedes/ink) terminal interface.
+
+```console
+$ bun install
+$ bun run start            # rich (curses-style) interface, default
+$ bun run start -- --basic # minimal interface, least CPU (good for servers)
+```
+
+Other flags: `--no-save`, `--list-saves`, `--load-save N`, `--help`. Characters
+are saved to `$XDG_CONFIG_HOME/pqcli/save.dat`.
+
+## How to install (original Python version)
 
 If you have Python 3.7, just run `pip install --user pqcli` and you're good to go!
 Then type `pqcli` to run the game.

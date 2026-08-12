@@ -1,5 +1,6 @@
 import { below, belowLow, choice } from "../common/common";
 import { actName, definite, indefinite } from "../common/lingo";
+import { logger } from "../common/logger";
 import { TaskType } from "../data/enums";
 import {
     boringItem,
@@ -141,6 +142,7 @@ export class Simulation {
     completeQuest() {
         this.player.questBook.questBar.reset(50 + belowLow(1000));
         if (this.player.questBook.currentQuest) {
+            logger.info(`Quest completed: ${this.player.questBook.currentQuest}`);
             // reward the player for completing the quest
             choice([
                 () => this.player.winSpell(),
