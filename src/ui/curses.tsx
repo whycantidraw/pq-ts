@@ -89,6 +89,11 @@ export async function runCurses(
     initialPlayer: Player | null,
     useSaves: boolean,
 ): Promise<void> {
-    const app = render(<App roster={roster} initialPlayer={initialPlayer} useSaves={useSaves} />);
+    const app = render(<App roster={roster} initialPlayer={initialPlayer} useSaves={useSaves} />, {
+        // Only rewrite lines that changed between frames. The default
+        // renderer erases and redraws the whole frame every tick, which
+        // flickers on large terminals.
+        incrementalRendering: true,
+    });
     await app.waitUntilExit();
 }
